@@ -49,7 +49,7 @@ public class Draw extends View {
         path = new Path();
         paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setStrokeWidth(5f);
+        paint.setStrokeWidth(10f);
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
@@ -115,16 +115,22 @@ public class Draw extends View {
         float eventY = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                paths.add(path);
-                paints.add(paint);
                 path.moveTo(eventX, eventY);
                 return true;
             case MotionEvent.ACTION_MOVE:
                 path.lineTo(eventX, eventY);
                 break;
             case MotionEvent.ACTION_UP: // nothing to do
+                paths.add(path);
+                paints.add(paint);
                 path = new Path();
                 paint = new Paint();
+                paint.setAntiAlias(true);
+                paint.setStrokeWidth(paints.get(paints.size()-1).getStrokeWidth());
+                paint.setColor(paints.get(paints.size()-1).getColor());
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeJoin(Paint.Join.ROUND);
+                invalidate();
                 break;
             default:
                 return false;
@@ -135,13 +141,10 @@ public class Draw extends View {
     }
 
     public void undo() {
-        //clear();
-        Path tmpPath;
-        Paint tmpPaint;
-        for (int i = 0; i < paths.size(); i++) {
-            tmpPath = paths.get(i);
-            tmpPaint = paints.get(i);
-            canvas.drawPath(tmpPath, tmpPaint);
+        if (!paths.isEmpty() && !paints.isEmpty()) {
+            paths.remove(paths.size() - 1);
+            paints.remove(paints.size() - 1);
+            draw(canvas);
         }
     }
 
@@ -151,7 +154,7 @@ public class Draw extends View {
         paths = new ArrayList<Path>();
         paints = new ArrayList<Paint>();
         paint.setAntiAlias(true);
-        paint.setStrokeWidth(5f);
+        paint.setStrokeWidth(10f);
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
