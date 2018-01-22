@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Dessin</string>
+    <string name="nothing">\"\"</string>
+    <string name="title_save">SAVE</string>
+    <string name="title_clear">CLEAR</string>
+    <string name="title_undo">UNDO</string>
 </resources>
